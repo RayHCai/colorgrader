@@ -1,15 +1,10 @@
 # dependencies
 node_modules/
-/.pnp
-.pnp.js
-
-# testing
-/coverage
 
 # production
 /build
 
-# misc
+# environment variables
 .env
 
 yarn-debug.log*

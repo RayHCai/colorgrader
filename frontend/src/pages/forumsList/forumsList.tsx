@@ -16,44 +16,44 @@ export function ForumsList() {
     useEffect(() => {
         updateLoadingState(true);
 
-        (async function() {
+        (async function () {
             try {
-                let forumsRes = await fetch(`${BACKEND_URL}/forums/`);
+                const forumsRes = await fetch(`${BACKEND_URL}/forums/`);
 
-                if(!forumsRes.ok) throw new Error('An error occurred while fetching forums. Please try again later.');
+                if (!forumsRes.ok)
+                    throw new Error(
+                        'An error occurred while fetching forums. Please try again later.'
+                    );
 
-                let forumJson = await forumsRes.json();
-                
-                updateForums(forumJson.data)
+                const forumJson = await forumsRes.json();
+
+                updateForums(forumJson.data);
             }
-            catch(error) {
+ catch (error) {
                 alert((error as Error).message);
             }
-            finally {
+ finally {
                 updateLoadingState(false);
             }
         })();
     }, []);
 
-    if(isLoading) return <Loading />;
-    
+    if (isLoading) return <Loading />;
+
     return (
         <div className="forums-list-container">
             <h1>Forums</h1>
 
-            {
-                forums.length > 0 ? (
-                    forums.map(
-                        (forum, index) => (
-                            <Forum 
-                                forumId={ forum.id } 
-                                name={ forum.name } 
-                                key={ index }
-                            />
-                        )
-                    )
-                ) : <h3>No forums found. Go <Link to='/addforum'>here</Link> to add one.</h3>
-            }
+            { forums.length > 0 ? (
+                forums.map((forum, index) => (
+                    <Forum forumId={ forum.id } name={ forum.name } key={ index } />
+                ))
+            ) : (
+                <h3>
+                    No forums found. Go <Link to="/addforum">here</Link> to add
+                    one.
+                </h3>
+            ) }
         </div>
     );
 }

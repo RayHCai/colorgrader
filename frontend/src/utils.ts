@@ -11,8 +11,9 @@ export async function createInferences(forumId: string, questions: string[]) {
         redirect: 'follow',
         referrerPolicy: 'no-referrer',
         body: JSON.stringify({
+            // eslint-disable-next-line camelcase
             forum_id: forumId,
-            questions: questions
-        })
+            questions: questions,
+        }),
     });
 }

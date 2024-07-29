@@ -24,7 +24,7 @@ button {
     border: 1px solid var(--white);
     color: var(--white);
     padding: 10px 30px 10px 30px;
-    transition: 0.2s;    
+    transition: 0.2s;
     cursor: pointer;
 }
 
@@ -70,8 +70,8 @@ button {
 
 .calvin-logo-nav-open:hover {
     background: linear-gradient(
-        90deg, 
-        var(--yellow-sub-color) 50%, 
+        90deg,
+        var(--yellow-sub-color) 50%,
         var(--black) 50%
     );
 }

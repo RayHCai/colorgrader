@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+
+:root {
+    --black: rgb(27, 27, 27);
+    --white: rgb(223, 223, 223);
+    --yellow-sub-color: rgb(226, 173, 0);
+}
+
+body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Roboto', sans-serif;
+
+    margin: 0;
+}
+
+button {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+}
+
+.styled-button-dark {
+    background: none;
+    border: 1px solid var(--white);
+    color: var(--white);
+    padding: 10px 30px 10px 30px;
+    transition: 0.2s;    
+    cursor: pointer;
+}
+
+.styled-button-dark:hover {
+    background: var(--white);
+    color: var(--black);
+}
+
+.styled-button-colored {
+    background: none;
+    color: var(--white);
+    border: 1px solid var(--white);
+    padding: 10px 30px 10px 30px;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.styled-button-colored:hover {
+    color: var(--yellow-sub-color);
+    border-color: var(--yellow-sub-color);
+}
+
+/* #region Navbar */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.navbar img {
+    width: 30px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.calvin-logo-nav-open {
+    padding-right: 200px !important;
+    background: var(--black);
+    transition: 0.2s;
+}
+
+.calvin-logo-nav-open:hover {
+    background: linear-gradient(
+        90deg, 
+        var(--yellow-sub-color) 50%, 
+        var(--black) 50%
+    );
+}
+
+.navbar-links-container {
+    z-index: -1;
+    top: 0;
+    position: absolute;
+    height: 100vh;
+    background: var(--white);
+}
+
+.navbar-links-container div {
+    margin-top: 100px;
+}
+
+.navbar a {
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--black);
+    transition: 0.2s;
+
+    padding: 20px 150px 20px 20px;
+    display: flex !important;
+}
+
+.navbar a:hover {
+    color: var(--yellow-sub-color);
+    background: var(--black);
+}
+
+/* #endregion */
+
+.loading {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -200%);
+
+    align-items: center;
+    font-size: larger;
+}
+
+.loading svg {
+    margin-left: 20px;
+    fill: var(--yellow-sub-color);
+}
+
+.forum-container {
+    width: 50%;
+    transform: translateX(50%);
+    margin-top: 50px;
+
+    cursor: pointer;
+    border: 1px solid var(--white);
+    color: var(--white);
+    transition: 0.2s;
+}
+
+.forum-container:hover {
+    border: 1px solid var(--yellow-sub-color);
+    color: var(--yellow-sub-color);
+}

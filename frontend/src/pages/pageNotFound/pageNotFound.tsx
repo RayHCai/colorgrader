@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './pageNotFound.css';
 
 export function PageNotFound() {
-    let navigate = useNavigate();
-    
+    const navigate = useNavigate();
+
     return (
         <div className="page-not-found-container">
             <div className="pnf-letters-container">
@@ -13,11 +13,9 @@ export function PageNotFound() {
 
             <p>We can't find the page you're looking for.</p>
 
-            <button 
-                className="styled-button-colored" 
-                onClick={
-                    () => navigate('/') 
-                }
+            <button
+                className="styled-button-colored"
+                onClick={ () => navigate('/') }
             >
                 Go back home
             </button>

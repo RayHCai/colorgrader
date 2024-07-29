@@ -1,0 +1,8 @@
+forum-csv-files/
+forum-inference-files/
+
+db.sqlite3
+
+__pycache__/
+
+venv/

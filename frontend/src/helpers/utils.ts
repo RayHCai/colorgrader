@@ -1,4 +1,4 @@
-import { BACKEND_URL } from './settings';
+import { BACKEND_URL } from '../settings';
 
 export async function createInferences(forumId: string, questions: string[]) {
     return await fetch(`${BACKEND_URL}/foruminference/`, {

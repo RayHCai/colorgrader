@@ -1,8 +1,14 @@
-.forum-create-container {
+.container {
     text-align: center;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
 }
 
-.custom-forum-file-upload {
+.fileUploadContainer {
+    font-size: 30px;
     font-weight: bold;
     transition: 0.2s;
     cursor: pointer;
@@ -11,18 +17,24 @@
     margin-bottom: 50px !important;
 }
 
-.custom-forum-file-upload:hover {
-    color: var(--yellow-sub-color);
+.fileUploadContainer:hover {
+    filter: brightness(0.8);
 }
 
-.forum-file-upload {
+.fileUpload {
+    /* display: none; */
+}
+
+input[type='file'] {
+    display: block;
+    color: red;
+    font-style: oblique;
+}
+input[type='file']::file-selector-button {
     display: none;
 }
 
-.forum-create-container div {
-    margin: 20px 0px 20px 0px;
-    width: 50%;
-    transform: translateX(50%);
+.container div {
     align-items: center;
     justify-content: center;
     display: block;

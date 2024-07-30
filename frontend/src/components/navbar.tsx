@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 export function Navbar() {
-    const [isNavOpen, _updateNavState] = useState(true);
+    const [isNavOpen, _updateNavState] = useState(false);
 
     const links = [
         {

@@ -1,0 +1,38 @@
+.wrapper {
+    position: relative;
+}
+
+button {
+    font-family: var(--font-family);
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    display: block;
+    padding: 16px 32px;
+    background: inherit;
+    background: var(--black);
+    color: var(--white);
+    border: 0px;
+
+    cursor: pointer;
+}
+
+.bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    
+    background: var(--white);
+
+    background-size: 600% 600%;
+
+    z-index: -1;
+    transform: translate(-2px, -2px);
+    transition: filter 0.2s ease-in-out;
+}
+
+button:hover .bg {
+    filter: brightness(0.5) blur(3px);
+}

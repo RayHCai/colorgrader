@@ -1,12 +1,11 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import { ForumsList } from './pages/forumsList/forumsList';
-import { AddForum } from './pages/addForum/addForum';
-import { ForumDetails } from './pages/forumdetails/forumDetails';
-import { PageNotFound } from './pages/pageNotFound/pageNotFound';
+import AssignmentList from '@/pages/assignmentList';
+import Upload from '@/pages/upload';
+import { ForumDetails } from '@/pages/forumdetails/forumDetails';
+import PageNotFound from '@/pages/pageNotFound';
 
 import Layout from '@/components/layout';
 
@@ -17,17 +16,15 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <Layout>
-                <Routes>
-                    <Route path="/" element={ <ForumsList /> } />
-                    <Route path="/addforum" element={ <AddForum /> } />
-                    <Route path="/forum" element={ <ForumDetails /> } />
+    <BrowserRouter>
+        <Layout>
+            <Routes>
+                <Route path="/" element={ <AssignmentList /> } />
+                <Route path="/upload" element={ <Upload /> } />
+                <Route path="/assignment" element={ <ForumDetails /> } />
 
-                    <Route path="*" element={ <PageNotFound /> } />
-                </Routes>
-            </Layout>
-        </BrowserRouter>
-    </React.StrictMode>
+                <Route path="*" element={ <PageNotFound /> } />
+            </Routes>
+        </Layout>
+    </BrowserRouter>
 );

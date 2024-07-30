@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { BACKEND_URL, COLORS } from '../../settings';
-import { createInferences } from '../../utils';
+import { createInferences } from '../../helpers/utils';
 
 import { Loading } from '../../components/loading';
 import { ForumDetailsModal } from '../../components/forumDetailsModal';

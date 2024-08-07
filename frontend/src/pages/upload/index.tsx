@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '@/settings';
 import { createInferences } from '@/helpers/utils';
 
-import { Loading } from '@/components/loading';
+import Loading from '@/components/loading';
 import Button from '@/components/button';
 
 import classes from './styles.module.css';
@@ -12,13 +12,21 @@ import classes from './styles.module.css';
 export default function Upload() {
     const navigate = useNavigate();
 
-    const questions = useRef([] as any[]);
+    const questions = useRef([] as (HTMLInputElement | null)[]);
+    const assignmentName = useRef({} as HTMLInputElement | null);
+
     const [numQuestions, updateNumQuestions] = useState(0);
 
     const [assignment, updateAssignment] = useState([]);
     const [isLoading, updateLoadingState] = useState(false);
 
-    function upload() {
+    if (isLoading) return <Loading />;
+
+    async function upload() {
+        const curQuestions = questions.current.map(
+            (q) => (q as any).value
+        );
+
         updateLoadingState(true);
 
         try {
@@ -54,37 +62,44 @@ export default function Upload() {
 
                 const inferencesRes = await createInferences(
                     json.data as string,
-                    questions.current.map(
-                        (q) => (q as any).value
-                    )
+                    curQuestions
                 );
 
                 if (!inferencesRes.ok)
                     throw new Error('Error occurred while creating inferences. Please try again later.');
                 else navigate('/');
+
+                updateLoadingState(false);
             })();
         }
         catch (error) {
             alert((error as Error).message);
         }
-        finally {
-            updateLoadingState(false);
-        }
     }
-
-    if (isLoading) return <Loading />;
 
     return (
         <div className={ classes.container }>
-            <label className={ classes.fileUploadContainer }>
-                Upload CSV
-                
+            <h1>Create Assignment</h1>
+
+            <div className={ classes.top }>
+                <label className={ classes.fileUploadContainer }>
+                    Upload Assignment File
+                    
+                    <input
+                        className={ classes.fileUpload }
+                        accept=".csv"
+                        type="file"
+                        onChange={ (e) => updateAssignment(e.target.files as any) }
+                    />
+                </label>
+
                 <input
-                    className={ classes.fileUpload }
-                    type="file"
-                    onChange={ (e) => updateAssignment(e.target.files as any) }
+                    placeholder="Name"
+                    className={ classes.questionInput }
+                    ref={ (el) => (assignmentName.current = el) }
                 />
-            </label>
+            </div>
+
 
             <Button
                 onClick={ () => updateNumQuestions(numQuestions + 1) }
@@ -92,7 +107,7 @@ export default function Upload() {
                 Add question
             </Button>
 
-            <div>
+            <>
                 { new Array(numQuestions).fill(<input />).map((_, index) => (
                     <input
                         className={ classes.questionInput }
@@ -100,7 +115,7 @@ export default function Upload() {
                         ref={ (el) => (questions.current[index] = el) }
                     />
                 )) }
-            </div>
+            </>
 
             <Button onClick={ upload }>
                 Create assignment

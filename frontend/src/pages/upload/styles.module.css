@@ -1,14 +1,24 @@
 .container {
     text-align: center;
-    margin: 50px auto;
+    margin: auto;
     display: flex;
     flex-direction: column;
     gap: 16px;
     align-items: center;
 }
 
+.container h1 {
+    align-self: flex-start;
+    margin-left: 20%;
+    text-align: left;
+    width: 60%;
+    border-bottom: 2px solid rgba(128, 128, 128, 0.158);
+    padding-bottom: 3px;
+}
+
 .fileUploadContainer {
-    font-size: 30px;
+    text-align: left;
+    font-size: 20px;
     font-weight: bold;
     transition: 0.2s;
     cursor: pointer;
@@ -22,15 +32,14 @@
 }
 
 .fileUpload {
-    /* display: none; */
+    cursor: pointer;
+    display: block;
+    color: var(--white);
+    margin-top: 10px;
+    opacity: 0.8;
 }
 
-input[type='file'] {
-    display: block;
-    color: red;
-    font-style: oblique;
-}
-input[type='file']::file-selector-button {
+.fileUpload::file-selector-button {
     display: none;
 }
 
@@ -40,13 +49,29 @@ input[type='file']::file-selector-button {
     display: block;
 }
 
-.inference-question-input {
+.questionInput {
+    font-family: var(--font-family);
+    background: none;
+    color: var(--white);
+    border: 1px solid var(--white);
+    opacity: 0.6;
+
     display: block;
-    transform: translateX(35%);
     margin: 10px;
     padding: 10px 20px 10px 20px;
     outline: none;
-    width: 50%;
-    height: 40px;
-    border: none;
+    transition: 0.2s;
+    width: 20%;
+}
+
+.questionInput:hover {
+    opacity: 1;
+}
+
+.questionInput:focus {
+    opacity: 1;
+}
+
+.top {
+    display: flex !important;
 }

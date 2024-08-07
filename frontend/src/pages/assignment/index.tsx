@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { BACKEND_URL, COLORS } from '../../settings';
-import { createInferences } from '../../helpers/utils';
+import Loading from '@/components/loading';
+import { ForumDetailsModal } from '@/components/forumDetailsModal';
 
-import { Loading } from '../../components/loading';
-import { ForumDetailsModal } from '../../components/forumDetailsModal';
+import { BACKEND_URL, COLORS } from '@/settings';
+import { createInferences } from '@/helpers/utils';
 
-import './forumDetails.css';
+import classes from './styles.module.css';
 
-export function ForumDetails() {
+export default function Assignment() {
     const [searchParams, _] = useSearchParams();
 
     const grades = useRef({} as any);
@@ -65,10 +65,10 @@ export function ForumDetails() {
                 updatePosts(postJson.data.posts);
                 updateInferences(inferencesJson.data);
             }
- catch (error) {
+            catch (error) {
                 alert((error as Error).message);
             }
- finally {
+            finally {
                 updateLoadingState(false);
             }
         })();

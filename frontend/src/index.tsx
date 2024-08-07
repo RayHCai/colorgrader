@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import AssignmentList from '@/pages/assignmentList';
 import Upload from '@/pages/upload';
-import { ForumDetails } from '@/pages/forumdetails/forumDetails';
+import Assignment from '@/pages/assignment';
 import PageNotFound from '@/pages/pageNotFound';
 
 import Layout from '@/components/layout';
@@ -21,7 +21,7 @@ root.render(
             <Routes>
                 <Route path="/" element={ <AssignmentList /> } />
                 <Route path="/upload" element={ <Upload /> } />
-                <Route path="/assignment" element={ <ForumDetails /> } />
+                <Route path="/assignment" element={ <Assignment /> } />
 
                 <Route path="*" element={ <PageNotFound /> } />
             </Routes>

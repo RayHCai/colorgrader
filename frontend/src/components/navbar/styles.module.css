@@ -1,0 +1,80 @@
+.navbar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: absolute;
+    padding: 20px;
+}
+
+.icon {
+    cursor: pointer;
+    transition: 0.2s;
+    color: var(--white);
+    font-size: 2rem;
+}
+
+.icon:hover {
+    opacity: 0.6;
+}
+
+.navContainer {
+    opacity: 0;
+    animation: slideIn 0.5s forwards;
+}
+
+.slideOut {
+    opacity: 1;
+    animation: slideOut 0.5s forwards;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.linkContainer {
+    color: var(--white);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.linkContainer:hover {
+    opacity: 0.6;
+}
+
+.link {
+    text-decoration: none;
+    font-size: 20px;
+    color: inherit;
+}
+
+.angleBorder {
+    height: 3px;
+    width: 120%;
+    margin-top: 10px;
+    rotate: -5deg;
+    transform: translateX(2%);
+    background-image: var(--rainbow-gradient);
+    border-radius: 10px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}

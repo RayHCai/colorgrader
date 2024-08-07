@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-import { Loading } from '@/components/loading';
+import Loading from '@/components/loading';
 import Button from '@/components/button';
 
 import { BACKEND_URL } from '@/settings';
@@ -14,7 +14,7 @@ export default function AssignmentList() {
 
     const [assignments, updateAssignments] = useState([] as any[]);
 
-    const [isLoading, updateLoadingState] = useState(true);
+    const [isLoading, updateLoadingState] = useState(false);
 
     useEffect(() => {
         updateLoadingState(true);
@@ -51,7 +51,7 @@ export default function AssignmentList() {
                 assignments.map((assignment, index) => (
                     <Button
                         key={ index }
-                        onClick={ () => navigate(`forum/?forumId=${assignment.forumId}`) }
+                        onClick={ () => navigate(`assignment/?forumId=${assignment.id}`) }
                     >
                         { assignment.name }
                     </Button>

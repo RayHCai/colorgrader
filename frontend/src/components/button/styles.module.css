@@ -15,24 +15,10 @@ button {
     border: 0px;
 
     cursor: pointer;
+    border: 1px solid var(--white);
+    transition: 0.2s;
 }
 
-.bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    
-    background: var(--white);
-
-    background-size: 600% 600%;
-
-    z-index: -1;
-    transform: translate(-2px, -2px);
-    transition: filter 0.2s ease-in-out;
-}
-
-button:hover .bg {
-    filter: brightness(0.5) blur(3px);
+button:hover {
+    filter: brightness(0.9) blur(0.5px);
 }

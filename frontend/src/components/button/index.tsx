@@ -13,10 +13,7 @@ export default function Button(props: ButtonProps) {
             <div className={ `${classes.wrapper} ${props.className}` } onClick={ props.onClick }>
                 <button>
                     { props.children }
-                    <div className={ classes.bg } />
                 </button>
-
-                
             </div>
         </>
     );

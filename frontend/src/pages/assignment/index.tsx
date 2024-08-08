@@ -1,68 +1,59 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+
 import Loading from '@/components/loading';
-import { ForumDetailsModal } from '@/components/forumDetailsModal';
+import Button from '@/components/button';
 
 import { BACKEND_URL, COLORS } from '@/settings';
-import { createInferences } from '@/helpers/utils';
 
 import classes from './styles.module.css';
 
 export default function Assignment() {
     const [searchParams, _] = useSearchParams();
 
-    const grades = useRef({} as any);
-    const selected = useRef({} as any);
+    const grades = useRef<(HTMLInputElement[] | null)[]>([]);
 
-    const [loading, updateLoadingState] = useState(false);
+    const [isLoading, updateLoadingState] = useState(false);
 
-    const [posts, updatePosts] = useState([]);
-    const [forumName, updateForumName] = useState('');
-    const [inferences, updateInferences] = useState(null as any);
+    const [assignmentName, updateAssignmentName] = useState('');
+    const [answers, updateAnswers] = useState<Answer[]>([]);
+    const [inferences, updateInferences] = useState<Inference | null>(null);
 
-    const [questionFilter, updateFilter] = useState(-1);
-    const [postFilter, updateFilteredPosts] = useState([] as any);
-    const [isFiltering, updateFilterStatus] = useState(false);
-    const [filterObj, updateFilterObj] = useState({} as any);
-
-    const [updateQuestion, updateQuestionState] = useState(false);
-
-    const newQuestion = useRef(null as any);
-
-    const [newInferences, updateInference] = useState({} as any);
+    const [curPage, updateCurPage] = useState(0);
 
     useEffect(() => {
         updateLoadingState(true);
 
         (async function () {
             try {
-                const postRes = await fetch(
-                    `${BACKEND_URL}/forums/?forum_id=${searchParams.get(
-                        'forumId'
+                const assignmentRes = await fetch(
+                    `${BACKEND_URL}/assignments/?assignment_id=${searchParams.get(
+                        'id'
                     )}`
                 );
 
-                if (!postRes.ok)
-                    throw new Error('Error occurred while fetching posts');
+                if (!assignmentRes.ok)
+                    throw new Error('Error occurred while fetching answers');
 
-                const postJson = await postRes.json();
+                const assignmentJSON = await assignmentRes.json();
 
                 const inferenceRes = await fetch(
-                    `${BACKEND_URL}/foruminference/?forum_id=${searchParams.get(
-                        'forumId'
+                    `${BACKEND_URL}/inference/?assignment_id=${searchParams.get(
+                        'id'
                     )}`
                 );
 
                 if (!inferenceRes.ok)
                     throw new Error(
-                        'Error occurred while fetching inferences for post'
+                        'Error occurred while fetching inferences for answers'
                     );
 
                 const inferencesJson = await inferenceRes.json();
 
-                updateForumName(postJson.data.name);
-                updatePosts(postJson.data.posts);
+                updateAssignmentName(assignmentJSON.data.name);
+                updateAnswers(assignmentJSON.data.answers);
                 updateInferences(inferencesJson.data);
             }
             catch (error) {
@@ -74,137 +65,16 @@ export default function Assignment() {
         })();
     }, []);
 
-    function filterQ(qIndex: number) {
-        if (qIndex === -1) return;
-
-        updateFilter(qIndex);
-    }
-
-    function filterBySimilarity(
-        postInd: number,
-        qIndex: number,
-        similarity: number
-    ) {
-        updateLoadingState(true);
-
-        (async function () {
-            try {
-                const relationRes = await fetch(
-                    `${BACKEND_URL}/postrelations/`,
-                    {
-                        method: 'POST',
-                        cache: 'no-cache',
-                        credentials: 'same-origin',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        redirect: 'follow',
-                        referrerPolicy: 'no-referrer',
-                        body: JSON.stringify({
-                            question: inferences.questions[qIndex],
-                            // eslint-disable-next-line camelcase
-                            forum_id: searchParams.get('forumId'),
-                            // eslint-disable-next-line camelcase
-                            post_id: postInd,
-                            similarity: similarity,
-                        }),
-                    }
-                );
-
-                const relationJson = await relationRes.json();
-
-                const filteredPostIds = Object.keys(relationJson.data);
-
-                updateFilteredPosts([...filteredPostIds]);
-                updateFilter(qIndex);
-            }
-            catch (error) {
-                alert((error as Error).message);
-            }
-            finally {
-                updateLoadingState(false);
-            }
-        })();
-    }
-
-    function masterFilter(filterSimilarity: boolean, similarity: number = 0) {
-        updateFilterStatus(false);
-
-        if (filterSimilarity)
-            filterBySimilarity(filterObj.postId, filterObj.qIndex, similarity);
-        else filterQ(filterObj.qIndex);
-    }
-
-    function updateQuestionsMaster(index: number) {
-        const selectedPosts = Object.keys(selected.current).filter(
-            (postId) => selected.current[postId].checked
-        );
-
-        if (selectedPosts.length === 0)
-            return alert(
-                'No posts to check against. Please select at least one post.'
-            );
-
-        updateQuestionState(true);
-        updateFilter(index);
-        updateFilteredPosts(selectedPosts);
-    }
-
-    function testNewQuestion() {
-        updateLoadingState(true);
-
-        try {
-            (async function () {
-                const updateQuestionPosts = Object.keys(
-                    selected.current
-                ).filter((k) => selected.current[k]);
-
-                const newRes = await fetch(
-                    `${BACKEND_URL}/questioninference/`,
-                    {
-                        method: 'POST',
-                        cache: 'no-cache',
-                        credentials: 'same-origin',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        redirect: 'follow',
-                        referrerPolicy: 'no-referrer',
-                        body: JSON.stringify({
-                            question: newQuestion.current.value,
-                            // eslint-disable-next-line camelcase
-                            forum_id: searchParams.get('forumId'),
-                            // eslint-disable-next-line camelcase
-                            post_ids: JSON.stringify(updateQuestionPosts),
-                        }),
-                    }
-                );
-
-                const newJson = await newRes.json();
-
-                // eslint-disable-next-line no-console
-                console.log(
-                    newJson.data.inferences,
-                    JSON.stringify(updateQuestionPosts)
-                );
-
-                updateInference(newJson.data.inferences);
-            })();
-        }
-        catch (error) {
-            alert((error as Error).message);
-        }
-        finally {
-            updateLoadingState(false);
-        }
-    }
-
     function finalizeGrades() {
         const jsonGrades = JSON.stringify(
-            posts.map((e: any) => {
+            answers.map(a => {
+                const gradeRef = grades.current[Number(a.id)];
+
                 return {
-                    [e.id]: grades.current[e.id].map((v: any) =>
-                        Number(v.value)
+                    [a.id]: (
+                        !gradeRef ? null : (
+                            gradeRef.map((i: HTMLInputElement) => Number(i.value))
+                        )
                     ),
                 };
             })
@@ -215,7 +85,7 @@ export default function Assignment() {
         a.href = window.URL.createObjectURL(
             new Blob([jsonGrades], { type: 'application/json' })
         );
-        a.download = `${forumName}-grades.json`;
+        a.download = `${assignmentName}-grades.json`;
 
         document.body.appendChild(a);
         a.click();
@@ -223,240 +93,123 @@ export default function Assignment() {
         document.body.removeChild(a);
     }
 
-    function saveNewQuestions() {
-        updateLoadingState(true);
-
-        try {
-            (async function () {
-                const res = await fetch(`${BACKEND_URL}/deleteinferences/`, {
-                    method: 'POST',
-                    cache: 'no-cache',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    redirect: 'follow',
-                    referrerPolicy: 'no-referrer',
-                    body: JSON.stringify({
-                        // eslint-disable-next-line camelcase
-                        forum_id: searchParams.get('forumId'),
-                    }),
-                });
-
-                if (!res.ok)
-                    throw new Error(
-                        'An error occurred while deleting inferences'
-                    );
-
-                const cleanedQuestions = [...inferences.questions];
-
-                cleanedQuestions[questionFilter] = newQuestion;
-
-                const inferencesRes = await createInferences(
-                    searchParams.get('forumId') as string,
-                    cleanedQuestions
-                );
-
-                if (!inferencesRes.ok)
-                    throw new Error('Error occurred while creating inferences');
-                else window.location.reload();
-            })();
-        }
- catch (error) {
-            alert((error as Error).message);
-        }
- finally {
-            updateLoadingState(false);
-        }
-    }
-
-    if (loading) return <Loading />;
-    else if (isFiltering)
-        return (
-            <ForumDetailsModal
-                forumName={ filterObj.forumName }
-                question={ filterObj.question }
-                filter={ masterFilter }
-                close={ () => updateFilterStatus(false) }
-            />
-        );
+    if(isLoading || answers.length === 0) return <Loading />;
 
     return (
-        <div className="forum-details-container">
-            <h1>{ forumName }</h1>
+        <div className={ classes.container }>
+            <h1>{ assignmentName }</h1>
 
-            <button
-                onClick={ () => {
-                    updateFilter(-1);
-                    updateFilteredPosts([]);
-                    updateQuestionState(false);
-                    updateInference({});
-                } }
-                className="styled-button-dark"
-            >
-                Reset filters
-            </button>
+            <div className={ classes.buttonContainer }>
+                <Button
+                    onClick={ finalizeGrades }
+                >
+                    Download Grades
+                </Button>
+            </div>
 
-            <button
-                className="grade-button styled-button-dark"
-                onClick={ finalizeGrades }
-            >
-                Download Grades
-            </button>
-
-            { updateQuestion ? (
-                <div>
-                    <input
-                        className="update-question-input"
-                        placeholder="Question"
-                        type="text"
-                        ref={ newQuestion }
-                    />
-                    <button
-                        className="styled-button-dark"
-                        onClick={ testNewQuestion }
-                    >
-                        Test
-                    </button>
-                    <button
-                        className="styled-button-dark"
-                        onClick={ saveNewQuestions }
-                    >
-                        Save
-                    </button>
-                </div>
-            ) : null }
-
-            { inferences
-                ? inferences.questions.map((q: string, index: number) => (
+            {
+                inferences && (
+                    inferences.questions.map((q: string, index: number) => (
                       <h4
                           style={ { color: COLORS[index] } }
                           key={ index }
-                          onClick={ () => {
-                              if (window.confirm('Update Question?'))
-                                  updateQuestionsMaster(index);
-                              else filterQ(index);
-                          } }
                       >
                           { q }
                       </h4>
-                  ))
-                : null }
-
-            { posts.map((post: any) => {
-                if (
-                    postFilter.length !== 0 &&
-                    !postFilter.includes(post.id.toString())
+                    ))
                 )
-                    return;
+            }
 
-                const postSpans = [];
-
-                const postInferences =
-                    updateQuestion && newInferences[post.id]
-                        ? [newInferences[post.id]]
-                        : inferences.inferences[post.id];
-
-                // eslint-disable-next-line no-console
-                if (postFilter.length !== 0) console.log(newInferences);
-
-                const colors = new Array<string>(post.message.length).fill(
-                    'white'
-                );
-
-                for (let i = 0; i < postInferences.length; i++) {
-                    const ans = postInferences[i];
-                    const startInd = ans.start_ind;
-                    const endInd = ans.end_ind;
-
-                    for (let j = startInd; j <= endInd; j++) {
-                        colors[j] =
-                            updateQuestion && newInferences[post.id]
-                                ? COLORS[questionFilter]
-                                : COLORS[i];
+            <div className={ classes.answerContainer }>
+                <IoIosArrowBack
+                    className={ `${classes.arrow} ${curPage <= 0 ? classes.disabled : ''}` }
+                    onClick={
+                        () => {
+                            if(curPage > 0)
+                                updateCurPage(curPage - 1)
+                        }
                     }
-                }
+                />
 
-                for (let i = 0; i < post.message.length; i++) {
-                    const c = post.message[i];
+                {
+                    (function() {
+                        const answer = answers[curPage];
 
-                    let qInd = -1;
+                        const answerSpans = [];
 
-                    if (colors[i] !== 'white') qInd = COLORS.indexOf(colors[i]);
+                        const answerInferences = inferences!.inferences[answer.id];
 
-                    if (qInd !== questionFilter && updateQuestion)
-                        colors[i] = 'white';
+                        const colors = new Array<string>(answer.answer.length).fill(
+                            'white'
+                        );
 
-                    postSpans.push(
-                        <span
-                            onClick={ () => {
-                                if (colors[i] !== 'white') {
-                                    updateFilterObj({
-                                        forumName: post.user_full_name,
-                                        question: inferences.questions[qInd],
-                                        postId: post.id,
-                                        qIndex: qInd,
-                                    });
+                        for (let i = 0; i < answerInferences.length; i++) {
+                            const ans = answerInferences[i];
+                            const startInd = ans.start_ind;
+                            const endInd = ans.end_ind;
 
-                                    updateFilterStatus(true);
-                                }
-                            } }
-                            className={ `${
-                                colors[i] !== 'white' ? 'answer' : ''
-                            } 
-                                        ${
-                                            !updateQuestion &&
-                                            qInd !== questionFilter &&
-                                            questionFilter !== -1
-                                                ? 'hidden'
-                                                : ''
-                                        }` }
-                            style={ {
-                                color: colors[i],
-                            } }
-                        >
-                            { c }
-                        </span>
-                    );
-                }
+                            for (let j = startInd; j <= endInd; j++) {
+                                colors[j] = COLORS[i];
+                            }
+                        }
 
-                return (
-                    <div className="post-container">
-                        <input
-                            className="check-post"
-                            type="checkbox"
-                            disabled={ updateQuestion }
-                            ref={ (el) => (selected.current[post.id] = el) }
-                        />
+                        for (let i = 0; i < answer.answer.length; i++) {
+                            const c = answer.answer[i];
 
-                        <div className="post-content-container">
-                            <h2>{ post.user_full_name }</h2>
-
-                            { postSpans.map((span: any) => span) }
-                        </div>
-
-                        <div className="post-score-container">
-                            { inferences.questions.map((q: any, i: any) => (
-                                <input
-                                    type="number"
-                                    className="post-score"
+                            answerSpans.push(
+                                <span
                                     key={ i }
-                                    placeholder={ `Grade for ${q}` }
-                                    ref={ (el) => {
-                                        if (!grades.current[post.id])
-                                            grades.current[post.id] =
-                                                new Array<HTMLInputElement>(
-                                                    inferences.questions.length
-                                                );
-
-                                        grades.current[post.id][i] = el!;
+                                    style={ {
+                                        color: colors[i],
                                     } }
-                                />
-                            )) }
-                        </div>
-                    </div>
-                );
-            }) }
+                                >
+                                    { c }
+                                </span>
+                            );
+                        }
+
+                        return (
+                            <div className={ classes.answerContentContainer }>
+                                <div className={ classes.answerContent }>
+                                    <h2>{ answer.student }</h2>
+
+                                    { answerSpans.map((span: any) => span) }
+                                </div>
+
+                                <div className={ classes.scoreContainer }>
+                                    { inferences!.questions.map((q: any, i: any) => (
+                                        <input
+                                            type="number"
+                                            className={ classes.scoreInput }
+                                            key={ i }
+                                            placeholder={ `Grade for "${q}"` }
+                                            ref={ (el) => {
+                                                if (!grades.current[Number(answer.id)])
+                                                    grades.current[Number(answer.id)] =
+                                                        new Array<HTMLInputElement>(
+                                                            inferences!.questions.length
+                                                        );
+
+                                                grades.current[Number(answer.id)]![i] = el!;
+                                            } }
+                                        />
+                                    )) }
+                                </div>
+                            </div>
+                        );
+                    })()
+                }
+
+                <IoIosArrowForward
+                    className={ `${classes.arrow} ${curPage > answers.length - 2 ? classes.disabled : ''}` }
+                    onClick={
+                        () => {
+                            if(curPage < answers.length - 1)
+                                updateCurPage(curPage + 1)
+                        }
+                    }
+                />
+            </div>
         </div>
     );
 }

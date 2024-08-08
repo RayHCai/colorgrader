@@ -31,20 +31,20 @@ export default function Upload() {
 
         try {
             if (assignment.length === 0)
-                throw new Error('Need to upload a CSV file');
+                throw new Error('Need to upload a JSON file');
             else if (assignment.length > 1)
                 throw new Error('Can only upload one file at a time');
 
-            const forumFile: Blob = assignment[0];
+            const file: Blob = assignment[0];
 
-            if (forumFile.type.indexOf('csv') === -1)
-                throw new Error('Type of file must be a CSV');
+            if (file.type.indexOf('json') === -1)
+                throw new Error('Type of file must be JSON');
 
             (async function () {
                 const data = new FormData();
-                data.append('file', forumFile);
+                data.append('file', file);
 
-                const res = await fetch(`${BACKEND_URL}/forums/`, {
+                const res = await fetch(`${BACKEND_URL}/assignments/`, {
                     method: 'POST',
                     cache: 'no-cache',
                     credentials: 'same-origin',
@@ -55,7 +55,7 @@ export default function Upload() {
 
                 if (!res.ok)
                     throw new Error(
-                        'An error while creating forum. Please try again later.'
+                        'An error while creating assignment. Please try again later.'
                     );
 
                 const json = await res.json();
@@ -87,7 +87,7 @@ export default function Upload() {
                     
                     <input
                         className={ classes.fileUpload }
-                        accept=".csv"
+                        accept=".json"
                         type="file"
                         onChange={ (e) => updateAssignment(e.target.files as any) }
                     />

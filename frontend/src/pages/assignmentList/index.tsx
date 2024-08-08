@@ -12,7 +12,7 @@ import classes from './styles.module.css';
 export default function AssignmentList() {
     const navigate = useNavigate();
 
-    const [assignments, updateAssignments] = useState([] as any[]);
+    const [assignments, updateAssignments] = useState<Assignment[]>([]);
 
     const [isLoading, updateLoadingState] = useState(false);
 
@@ -21,11 +21,11 @@ export default function AssignmentList() {
 
         (async function () {
             try {
-                const res = await fetch(`${BACKEND_URL}/forums/`);
+                const res = await fetch(`${BACKEND_URL}/assignments/`);
 
                 if (!res.ok)
                     throw new Error(
-                        'An error occurred while fetching forums. Please try again later.'
+                        'An error occurred while fetching. Please try again later.'
                     );
 
                 const json = await res.json();
@@ -51,7 +51,7 @@ export default function AssignmentList() {
                 assignments.map((assignment, index) => (
                     <Button
                         key={ index }
-                        onClick={ () => navigate(`assignment/?forumId=${assignment.id}`) }
+                        onClick={ () => navigate(`assignment/?id=${assignment.id}`) }
                     >
                         { assignment.name }
                     </Button>

@@ -22,5 +22,6 @@ jobs:
             - name: Set up Node.js
               uses: actions/setup-node@v3
 
+            - run: cd frontend
             - run: npm i
             - run: npm run lint

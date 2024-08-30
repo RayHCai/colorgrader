@@ -3,17 +3,29 @@
     margin: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 32px;
     align-items: center;
 }
 
 .container h1 {
+    font-weight: 100;
+    letter-spacing: 1px;
     align-self: flex-start;
     margin-left: 20%;
     text-align: left;
     width: 60%;
     border-bottom: 2px solid rgba(128, 128, 128, 0.158);
-    padding-bottom: 3px;
+    padding-bottom: 10px;
+}
+
+.container div {
+    align-items: center;
+    justify-content: center;
+    display: block;
+}
+
+.top {
+    display: flex !important;
 }
 
 .fileUploadContainer {
@@ -43,12 +55,6 @@
     display: none;
 }
 
-.container div {
-    align-items: center;
-    justify-content: center;
-    display: block;
-}
-
 .questionInput {
     font-family: var(--font-family);
     background: none;
@@ -70,8 +76,4 @@
 
 .questionInput:focus {
     opacity: 1;
-}
-
-.top {
-    display: flex !important;
 }

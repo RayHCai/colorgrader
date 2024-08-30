@@ -44,7 +44,7 @@ export default function Upload() {
                 const data = new FormData();
                 data.append('file', file);
 
-                const res = await fetch(`${BACKEND_URL}/assignments/`, {
+                const res = await fetch(`${ BACKEND_URL }/assignments/`, {
                     method: 'POST',
                     cache: 'no-cache',
                     credentials: 'same-origin',
@@ -92,12 +92,6 @@ export default function Upload() {
                         onChange={ (e) => updateAssignment(e.target.files as any) }
                     />
                 </label>
-
-                <input
-                    placeholder="Name"
-                    className={ classes.questionInput }
-                    ref={ (el) => (assignmentName.current = el) }
-                />
             </div>
 
 

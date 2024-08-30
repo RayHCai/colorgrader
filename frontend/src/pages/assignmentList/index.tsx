@@ -21,7 +21,7 @@ export default function AssignmentList() {
 
         (async function () {
             try {
-                const res = await fetch(`${BACKEND_URL}/assignments/`);
+                const res = await fetch(`${ BACKEND_URL }/assignments/`);
 
                 if (!res.ok)
                     throw new Error(

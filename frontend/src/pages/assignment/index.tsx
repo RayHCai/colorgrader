@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
@@ -10,10 +10,14 @@ import { BACKEND_URL, COLORS } from '@/settings';
 
 import classes from './styles.module.css';
 
+type Grades = {
+    [key: string]: number[]
+};
+
 export default function Assignment() {
     const [searchParams, _] = useSearchParams();
 
-    const grades = useRef<(HTMLInputElement[] | null)[]>([]);
+    const [grades, updateGrades] = useState<Grades>({});
 
     const [isLoading, updateLoadingState] = useState(false);
 
@@ -50,11 +54,21 @@ export default function Assignment() {
                         'Error occurred while fetching inferences for answers'
                     );
 
-                const inferencesJson = await inferenceRes.json();
+                const inferencesJSON = await inferenceRes.json();
+
+                const answers: Answer[] = assignmentJSON.data.answers;
 
                 updateAssignmentName(assignmentJSON.data.name);
-                updateAnswers(assignmentJSON.data.answers);
-                updateInferences(inferencesJson.data);
+                updateAnswers(answers);
+                updateInferences(inferencesJSON.data);
+
+                const tempGrades: Grades = {};
+
+                for(const answer of answers) {
+                    tempGrades[String(answer.id)] = new Array(inferencesJSON.data.questions.length).fill(0);
+                }
+                
+                updateGrades(tempGrades);
             }
             catch (error) {
                 alert((error as Error).message);
@@ -66,19 +80,7 @@ export default function Assignment() {
     }, []);
 
     function finalizeGrades() {
-        const jsonGrades = JSON.stringify(
-            answers.map(a => {
-                const gradeRef = grades.current[Number(a.id)];
-
-                return {
-                    [a.id]: (
-                        !gradeRef ? null : (
-                            gradeRef.map((i: HTMLInputElement) => Number(i.value))
-                        )
-                    ),
-                };
-            })
-        );
+        const jsonGrades = JSON.stringify(grades);
 
         const a = window.document.createElement('a');
 
@@ -173,25 +175,24 @@ export default function Assignment() {
                                 <div className={ classes.answerContent }>
                                     <h2>{ answer.student }</h2>
 
-                                    { answerSpans.map((span: any) => span) }
+                                    { answerSpans.map(span => span) }
                                 </div>
 
                                 <div className={ classes.scoreContainer }>
-                                    { inferences!.questions.map((q: any, i: any) => (
+                                    { inferences!.questions.map((q, i) => (
                                         <input
                                             type="number"
                                             className={ classes.scoreInput }
-                                            key={ i }
-                                            placeholder={ `Grade for "${q}"` }
-                                            ref={ (el) => {
-                                                if (!grades.current[Number(answer.id)])
-                                                    grades.current[Number(answer.id)] =
-                                                        new Array<HTMLInputElement>(
-                                                            inferences!.questions.length
-                                                        );
+                                            key={ `${i}question${curPage}` }
+                                            placeholder={ `${curPage} Grade for "${q}"` }
+                                            // value={ grades[curPage][i] }
+                                            onChange={
+                                                e => {
+                                                    grades[answer.id][i] = Number(e.target.value);
 
-                                                grades.current[Number(answer.id)]![i] = el!;
-                                            } }
+                                                    updateGrades(grades);
+                                                }
+                                            }
                                         />
                                     )) }
                                 </div>

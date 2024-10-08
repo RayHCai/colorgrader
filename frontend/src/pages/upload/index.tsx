@@ -13,7 +13,6 @@ export default function Upload() {
     const navigate = useNavigate();
 
     const questions = useRef([] as (HTMLInputElement | null)[]);
-    const assignmentName = useRef({} as HTMLInputElement | null);
 
     const [numQuestions, updateNumQuestions] = useState(0);
 

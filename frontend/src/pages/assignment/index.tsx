@@ -128,7 +128,7 @@ export default function Assignment() {
                     onClick={
                         () => {
                             if(curPage > 0)
-                                updateCurPage(curPage - 1)
+                                updateCurPage(curPage - 1);
                         }
                     }
                 />
@@ -206,7 +206,7 @@ export default function Assignment() {
                     onClick={
                         () => {
                             if(curPage < answers.length - 1)
-                                updateCurPage(curPage + 1)
+                                updateCurPage(curPage + 1);
                         }
                     }
                 />

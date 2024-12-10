@@ -17,4 +17,4 @@ def answers_from_assignment(assignment_obj: Assignments):
             - answer
     """
 
-    return json.load(open(assignment_obj.json_file.path))["answers"]
+    return json.load(open(assignment_obj.json_file.path, encoding="utf8"))["answers"]

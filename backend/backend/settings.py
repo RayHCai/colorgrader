@@ -1,13 +1,20 @@
 import multiprocessing
+import os
 
 from pathlib import Path
+
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "REDACTED"
+DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in ("1", "true", "yes")
 
-DEBUG = True
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set when DJANGO_DEBUG is false")
+    SECRET_KEY = "django-insecure-local-dev-only"
 
 INFERENCES_FILE_LOCATION = "assignment-inference-files/"
 ASSIGNMENT_FILE_LOCATION = "assignment-files/"
@@ -86,11 +93,11 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "railway",
-            "USER": "postgres",
-            "PASSWORD": "REDACTED",
-            "HOST": "containers-us-west-87.railway.app",
-            "PORT": "7442",
+            "NAME": os.environ.get("PGDATABASE", "postgres"),
+            "USER": os.environ.get("PGUSER", "postgres"),
+            "PASSWORD": os.environ.get("PGPASSWORD", ""),
+            "HOST": os.environ.get("PGHOST", "localhost"),
+            "PORT": os.environ.get("PGPORT", "5432"),
         }
     }
 
